@@ -338,7 +338,7 @@ class HelperController
         $fieldDescription = $admin->getFormFieldDescription($field);
 
         if (!$fieldDescription) {
-            throw new \RuntimeException(sprintf('The field "%s" does not exist .', $field));
+            throw new \RuntimeException(sprintf('The field "%s" does not exist.', $field));
         }
 
         if ($fieldDescription->getType() !== 'sonata_type_model_autocomplete') {
@@ -356,14 +356,17 @@ class HelperController
 
         $class = $mapping['targetEntity'];
 
-        // form attributes
         $formAutocomplete = $form->get($fieldDescription->getName());
 
-        $property = $formAutocomplete->getAttribute('property');
-        $callback = $formAutocomplete->getAttribute('callback');
-        $minimumInputLength = $formAutocomplete->getAttribute('minimum_input_length');
-        $limit = $formAutocomplete->getAttribute('items_per_page');
-        $searchType = $formAutocomplete->getAttribute('search_type');
+        if ($formAutocomplete->getConfig()->getAttribute('disabled')) {
+            throw new AccessDeniedException('Autocomplete list can`t be retrieved because the form element is disabled or read_only.');
+        }
+
+        $property = $formAutocomplete->getConfig()->getAttribute('property');
+        $callback = $formAutocomplete->getConfig()->getAttribute('callback');
+        $minimumInputLength = $formAutocomplete->getConfig()->getAttribute('minimum_input_length');
+        $limit = $formAutocomplete->getConfig()->getAttribute('items_per_page');
+        $searchType = $formAutocomplete->getConfig()->getAttribute('search_type');
 
         if ($page < 1) {
             $page = 1;
