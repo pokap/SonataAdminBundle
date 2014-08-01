@@ -14,22 +14,20 @@ namespace Sonata\AdminBundle\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
+
 use Sonata\AdminBundle\Form\DataTransformer\ModelToIdPropertyTransformer;
 
 /**
  * This type defines a standard text field with autocomplete feature.
- *
- * @author Andrej Hudec <pulzarraider@gmail.com>
  */
 class ModelAutocompleteType extends AbstractType
 {
-    const SEARCH_TYPE_BEGINS_WITH = 'begins_with';
-    const SEARCH_TYPE_CONTAINS = 'contains';
-    const SEARCH_TYPE_ENDS_WITH = 'ends_with';
+    const SEARCH_TYPE_BEGINS_WITH   = 'begins_with';
+    const SEARCH_TYPE_CONTAINS      = 'contains';
+    const SEARCH_TYPE_ENDS_WITH     = 'ends_with';
 
     /**
      * {@inheritDoc}
@@ -37,7 +35,7 @@ class ModelAutocompleteType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-                ->addViewTransformer(new ModelToIdPropertyTransformer($options['model_manager'], $options['class'], $options['property'], $options['multiple']), true)
+            ->addViewTransformer(new ModelToIdPropertyTransformer($options['model_manager'], $options['class'], $options['property'], $options['multiple']), true)
         ;
 
         $builder->add('title', 'text', array('attr'=>array('class'=>'span5'), 'property_path' => '[titles][0]'));
@@ -82,7 +80,6 @@ class ModelAutocompleteType extends AbstractType
             'compound'                        => true,
             'model_manager'                   => null,
             'class'                           => null,
-            'property'                        => null,
             'callback'                        => null,
             'search_type'                     => self::SEARCH_TYPE_CONTAINS,
             'multiple'                        => false,
@@ -96,12 +93,14 @@ class ModelAutocompleteType extends AbstractType
             'route'                           => array('name'=>'sonata_admin_retrieve_autocomplete_items', 'parameters'=>array()),
             'req_params'                      => array(),
             'req_param_name_search'           => 'q',
-            'req_param_name_page_number'      => 'page',
-            'req_param_name_page_limit'       => 'limit',
+            'req_param_name_page_number'      => '_page',
+            'req_param_name_page_limit'       => '_per_page',
 
             // dropdown list css class
             'dropdown_css_class'              => 'sonata-autocomplete-dropdown',
         ));
+
+        $resolver->setRequired(array('property'));
     }
 
     /**
